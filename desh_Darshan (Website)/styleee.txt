@@ -1,0 +1,48 @@
+.LatLang{
+    text-align: center;
+}
+
+.place{
+    font-family: 'Roboto';
+    font-size: 75px;
+    margin-top: 150px;
+    color: white;
+}
+
+.box{
+    margin-left: 300px;
+    height: 300px;
+    width: 1000px;
+    background-color: aliceblue;
+}
+
+.desc{
+    text-align: justify;
+    font-family: 'Roboto';
+    padding: 30px;
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden; /* Hide overflow content */
+    border-right: 3px solid #000; /* Simulate the typing cursor */
+    font-size: 24px;
+    position: relative;
+}
+
+
+.desc::before {
+    content: '|'; /* Display a blinking cursor */
+    display: inline-block;
+    width: 0; /* Start with no width */
+    animation: blink 0.7s infinite; /* Create a blinking animation */
+}
+
+@keyframes blink {
+    0% {
+        width: 0;
+    }
+    50% {
+        width: 10px; /* Adjust the cursor width */
+    }
+    100% {
+        width: 0;
+    }
+}

@@ -1,0 +1,50 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: #08031b no-repeat center center fixed;
+  background: -webkit-linear-gradient(bottom left, #08031b, #133744);
+  background: -moz-linear-gradient(bottom left, #08031b, #133744);
+  background: linear-gradient(to top right, #08031b, #133744);
+  background-attachment: fixed;
+}
+
+.button{
+    text-align: center;
+}
+
+.detect{
+    margin-top: 70px;
+    padding: 20px 180px;
+}
+
+.LatLang{
+    text-align: center;
+}
+
+.place{
+    font-family: 'Roboto';
+    font-size: 75px;
+    margin-top: 150px;
+    color: white;
+}
+
+.box{
+    margin-left: 300px;
+    height: 300px;
+    width: 1000px;
+    background-color: aliceblue;
+}
+
+.desc{
+    text-align: justify;
+    font-size: 25px;
+    font-family: 'Roboto';
+    padding: 30px;
+}
+

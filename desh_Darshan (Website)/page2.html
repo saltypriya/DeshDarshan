@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get started</title>
+    <link rel="stylesheet" href="style2.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    
+</head>
+<body>
+    <!-- Add a button for audio output -->
+    <!-- Add a button to stop the speech -->
+<button id="stopButton" disabled>Stop Speaking</button>
+
+<button id="speakButton">Speak Description</button>
+
+    <div class="button">
+        <a href="page2.html"><button class="detect" id="getLocationButton">Update location</button></a>
+        
+    </div>
+    <div class="LatLang">
+        <h1 class="place"><span id="status">Your location will be displayed here</span></h1>
+        <div class="box">
+            <p id="description" class="desc">Description of the place</p>
+            
+        </div>
+    </div>
+
+    <script>
+        const getLocationButton = document.getElementById('getLocationButton');
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const radius = 6371; // Earth's radius in kilometers
+            const dLat = toRadians(lat2 - lat1);
+            const dLon = toRadians(lon2 - lon1);
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return radius * c * 1000; // Convert to meters
+        }
+
+        function toRadians(degrees) {
+            return degrees * (Math.PI / 180);
+        }
+
+        // Array of target locations
+        const targetLocations = [
+            {
+                name: 'P_Block',
+                latitude: 28.449786, // Replace with your target latitude
+                longitude: 77.583067, // Replace with your target longitude
+                geofenceRadius: 10, // Geofence radius in meters
+            },
+            {
+                name: 'P_Block',
+                latitude: 28.445901, // Replace with your target latitude
+                longitude: 77.581517, // Replace with your target longitude
+                geofenceRadius: 10, // Geofence radius in meters
+            },
+            {
+                name: 'P_Block',
+                latitude: 28.440760, // Replace with your target latitude
+                longitude: 77.595823, // Replace with your target longitude
+                geofenceRadius: 10, // Geofence radius in meters
+            },
+            {
+                name: 'P_Block',
+                latitude: 28.4496213, // Replace with your target latitude
+                longitude: 77.5826961, // Replace with your target longitude
+                geofenceRadius: 10, // Geofence radius in meters
+            },
+            {
+                name: 'P_Block',
+                latitude: 28.449559, // Replace with your target latitude
+                longitude: 77.582455, // Replace with your target longitude
+                geofenceRadius: 10, // Geofence radius in meters
+            },
+            {
+                name: 'P_Block',
+                latitude: 28.449525, // Replace with your target latitude
+                longitude: 77.582475, // Replace with your target longitude
+                geofenceRadius: 10, // Geofence radius in meters
+            },
+            {
+                name: 'P_Block',
+                latitude: 28.4407393, // Replace with your target latitude
+                longitude: 77.5953534, // Replace with your target longitude
+                geofenceRadius: 10, // Geofence radius in meters
+            },
+            {
+                name: 'P_Block',
+                latitude: 28.4497071, // Replace with your target latitude
+                longitude: 77.5828604, // Replace with your target longitude
+                geofenceRadius: 10, // Geofence radius in meters
+            },
+            {
+                name: 'P_Block',
+                latitude: 28.6621696, // Replace with your target latitude
+                longitude:  77.2767744, // Replace with your target longitude
+                geofenceRadius: 15, // Geofence radius in meters
+            },
+            
+
+            {
+                name: 'C_Block',
+                latitude: 28.4511014, // Replace with your target latitude
+                longitude: 77.5849085, // Replace with your target longitude
+                geofenceRadius: 50, // Geofence radius in meters
+            },
+
+            {
+                name: 'C_Block',
+                latitude: 28.4511022, // Replace with your target latitude
+                longitude: 77.5848437, // Replace with your target longitude
+                geofenceRadius: 50, // Geofence radius in meters
+            },
+
+            
+
+            {
+                name: 'C_Block',
+                latitude: 28.6294016, // Replace with your target latitude
+                longitude:   77.2046848, // Replace with your target longitude
+                geofenceRadius: 50, // Geofence radius in meters
+            },
+
+            {
+                name: 'D_Block',
+                latitude: 28.629402, // Replace with your target latitude
+                longitude:   77.204685, // Replace with your target longitude
+                geofenceRadius: 50, // Geofence radius in meters
+            },
+            {
+                name: 'C_Block',
+                latitude: 28.4511527, // Replace with your target latitude
+                longitude:  77.585014, // Replace with your target longitude
+                geofenceRadius: 50, // Geofence radius in meters
+            },
+            {
+                name: 'D_Block',
+                latitude: 28.4504983, // Replace with your target latitude
+                longitude:  77.5854011, // Replace with your target longitude
+                geofenceRadius: 15, // Geofence radius in meters
+            },
+            {
+                name: 'D_Block',
+                latitude: 28.4501229, // Replace with your target latitude
+                longitude:  77.5858767, // Replace with your target longitude
+                geofenceRadius: 15, // Geofence radius in meters
+            },
+
+            
+
+
+            
+            // Add more target locations here...
+        ];
+
+        // Function to update location information and check geofence against multiple targets
+        function updateLocation(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            let isInsideGeofence = false;
+
+            // Iterate through each target location
+            for (const targetLocation of targetLocations) {
+                // Calculate distance to the current target location
+                const distance = calculateDistance(latitude, longitude, targetLocation.latitude, targetLocation.longitude);
+
+                // Check if within geofence for the current target location
+                if (distance <= targetLocation.geofenceRadius) {
+                    isInsideGeofence = true;
+                    document.getElementById('status').textContent = targetLocation.name;
+                    break; // Exit loop if inside geofence of any target location
+                }
+            }
+
+            if (!isInsideGeofence) {
+                document.getElementById('status').textContent = 'Outside Geofence';
+            }
+        }
+
+        // Function to handle location errors
+        function handleLocationError(error) {
+            console.error('Error getting location:', error.message);
+        }
+
+        // Request location updates with higher accuracy options
+        if ('geolocation' in navigator) {
+            const options = {
+                enableHighAccuracy: true, // Enable high accuracy mode
+                timeout: 5000, // Maximum time to wait for location in milliseconds
+                maximumAge: 0 // Don't use cached location
+            };
+
+            navigator.geolocation.watchPosition(updateLocation, handleLocationError, options);
+        } else {
+            console.error('Geolocation is not supported in this browser.');
+        }
+
+        const desc_P = "The P Block at Bennett University is a cutting-edge academic facility designed to cater primarily to first-year students. It boasts well-equipped lecture halls, group discussion rooms and interactive learning spaces that encourage student engagement and critical thinking. Moreover, the P Block's modern infrastructure, including high-speed internet, climate control, and safety features, ensures a conducive learning environment.";
+        const desc_C = "The C Block at our college is a substantial complex designed to accommodate male students, primarily functioning as a hostel. It is comprised of ten individual buildings, each boasting an impressive twelve floors, making it a prominent feature on our campus. Each building houses a number of rooms(double and triple sharing), providing accommodation for a substantial number of residents. The block also includes common areas, such as study rooms, lounges, and recreational spaces, where students can relax, socialize, and collaborate on academic endeavors.";
+        const desc_D = "The D Block at our college is a prominent complex primarily serving as a hostel for female students. The block includes common areas for studying, socializing, and relaxation. It is comprised of 6 buildings from D1 to D6. Notably, D6 within the D Block serves as a hostel for male students.Each building within the D Block offers a range of rooms, including double and triple sharing options, ensuring ample accommodation for a significant number of female students. The block is designed with the well-being and academic needs of its residents in mind.";
+        
+        if (targetLocations[0].name=='P_Block'){
+            const text = desc_P ;
+            const typingSpeed = 50; // Adjust typing speed (milliseconds per character)
+            const typingElement = document.getElementById("description");
+            let charIndex = 0;
+
+            function typeText() {
+                const currentText = text.slice(0, charIndex);
+                typingElement.textContent = currentText + '|'; // Add the cursor line
+                charIndex++;
+
+                if (charIndex <= text.length) {
+                    setTimeout(typeText, typingSpeed);
+                }
+            }
+
+            typeText();
+            
+        }
+        if (targetLocations[0].name=='C_Block'){
+            const text = desc_C ;
+            const typingSpeed = 50; // Adjust typing speed (milliseconds per character)
+            const typingElement = document.getElementById("description");
+            let charIndex = 0;
+
+            function typeText() {
+                const currentText = text.slice(0, charIndex);
+                typingElement.textContent = currentText + '|'; // Add the cursor line
+                charIndex++;
+
+                if (charIndex <= text.length) {
+                    setTimeout(typeText, typingSpeed);
+                }
+            }
+
+            typeText();
+            
+            document.getElementById("description").innerHTML=desc_C;
+        }
+        if (targetLocations[0].name=='D_Block'){
+            const text = desc_D ;
+            const typingSpeed = 50; // Adjust typing speed (milliseconds per character)
+            const typingElement = document.getElementById("description");
+            let charIndex = 0;
+
+            function typeText() {
+                const currentText = text.slice(0, charIndex);
+                typingElement.textContent = currentText + '|'; // Add the cursor line
+                charIndex++;
+
+                if (charIndex <= text.length) {
+                    setTimeout(typeText, typingSpeed);
+                }
+            }
+
+            typeText();
+            
+            document.getElementById("description").innerHTML=desc_D;
+        }
+
+
+// Declare a variable to hold the current speech utterance
+let currentUtterance = null;
+
+// Function to start speaking
+function startSpeaking(description) {
+    const synth = window.speechSynthesis;
+
+    // Check if speech synthesis is supported in the browser
+    if ('speechSynthesis' in window) {
+        // Create a SpeechSynthesisUtterance object
+        const utterance = new SpeechSynthesisUtterance(description);
+
+        // Optionally, you can configure the speech settings, such as voice and rate.
+        // For example, to set the voice to a specific one:
+        // utterance.voice = synth.getVoices()[0]; // Change the index as needed
+
+        // Start speaking
+        synth.speak(utterance);
+
+        // Store the current utterance
+        currentUtterance = utterance;
+
+        // Disable the "Speak Description" button and enable the "Stop Speaking" button
+        speakButton.disabled = true;
+        stopButton.disabled = false;
+    } else {
+        console.error('Speech synthesis is not supported in this browser.');
+    }
+}
+
+// Function to stop speaking
+function stopSpeaking() {
+    if (currentUtterance) {
+        window.speechSynthesis.cancel(); // Cancel the current speech
+        currentUtterance = null;
+
+        // Enable the "Speak Description" button and disable the "Stop Speaking" button
+        speakButton.disabled = false;
+        stopButton.disabled = true;
+    }
+}
+
+// Add a click event listener to the "Speak Description" button
+const speakButton = document.getElementById('speakButton');
+speakButton.addEventListener('click', function() {
+    const description = document.getElementById('description').textContent;
+
+    // Call the startSpeaking function with the description text
+    startSpeaking(description);
+});
+
+// Add a click event listener to the "Stop Speaking" button
+const stopButton = document.getElementById('stopButton');
+stopButton.addEventListener('click', stopSpeaking);
+
+        
+    </script>
+    
+</body>
+</html>
